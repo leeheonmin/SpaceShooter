@@ -1062,10 +1062,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 564559482878432376, guid: f0d1dc152d5121346bc780c1a4fb80bb, type: 3}
-      propertyPath: m_IsTrigger
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 564559482878432377, guid: f0d1dc152d5121346bc780c1a4fb80bb, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -1113,10 +1109,6 @@ PrefabInstance:
     - target: {fileID: 564559482878432379, guid: f0d1dc152d5121346bc780c1a4fb80bb, type: 3}
       propertyPath: m_Name
       value: Bullet
-      objectReference: {fileID: 0}
-    - target: {fileID: 1459231812559903875, guid: f0d1dc152d5121346bc780c1a4fb80bb, type: 3}
-      propertyPath: m_RootOrder
-      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f0d1dc152d5121346bc780c1a4fb80bb, type: 3}
