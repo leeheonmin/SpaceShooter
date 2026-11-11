@@ -9,7 +9,14 @@ public class RemoveBullet : MonoBehaviour
     {
         if (coll.collider.CompareTag("BULLET"))
         {
-            Instantiate(sparkEffect, coll.transform.position, Quaternion.identity);
+            ContactPoint cp = coll.GetContact(0);
+            Quaternion rot = Quaternion.LookRotation(-cp.normal);
+
+            // Instantiate(sparkEffect, coll.transform.position, Quaternion.identity);
+            GameObject spark = Instantiate(sparkEffect, cp.point, rot);
+
+            Destroy(spark, 1f);
+
             Destroy(coll.gameObject);
         }
     }
