@@ -15,7 +15,7 @@ public class RemoveBullet : MonoBehaviour
             // Instantiate(sparkEffect, coll.transform.position, Quaternion.identity);
             GameObject spark = Instantiate(sparkEffect, cp.point, rot);
 
-            Destroy(spark, 1f);
+            Destroy(spark, 0.5f);
 
             Destroy(coll.gameObject);
         }
