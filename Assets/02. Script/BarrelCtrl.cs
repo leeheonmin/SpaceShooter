@@ -1,20 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class BarrelCtrl : MonoBehaviour
 {
-    public GameObject expEffect;
+    [SerializeField] public GameObject expEffect;
+    [SerializeField] public Texture[] textures;
+    public float radius = 10.0f;
+    [SerializeField] private MeshRenderer renderer;
 
-    private Transform tr;
-    private Rigidbody rb;
+    [SerializeField] private Transform tr;
+    [SerializeField] private Rigidbody rb;
 
-    private int hitCount = 0;
+    [SerializeField] private int hitCount = 0;
     // Start is called before the first frame update
     void Start()
     {
         tr = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();
+        
+        renderer = GetComponentInChildren<MeshRenderer>();
+
+        
+        int idx = Random.Range(0, textures.Length);
+        renderer.material.mainTexture = textures[idx];
     }
     void OnCollisionEnter(Collision coll)
     {
@@ -31,13 +42,23 @@ public class BarrelCtrl : MonoBehaviour
         GameObject exp = Instantiate(expEffect, tr.position, Quaternion.identity);
         Destroy(exp, 5.0f);
 
-        rb.mass = 1.0f;
-        rb.AddForce(Vector3.up * 1500.0f);
+        // rb.mass = 1.0f;
+        // rb.AddForce(Vector3.up * 1500.0f);
+        IndirectDamage(tr.position);
         Destroy(gameObject, 3.0f);
     }
-    // Update is called once per frame
-    void Update()
+    
+    void IndirectDamage(Vector3 pos)
     {
-        
+        Collider[] colls= Physics.OverlapSphere(pos, radius, 1 << 3);
+
+        foreach (var coll in colls)
+        {
+            rb = coll.GetComponent<Rigidbody>();
+            rb.mass = 1.0f;
+            rb.constraints = RigidbodyConstraints.None;
+
+            rb.AddExplosionForce(1500.0f, pos, radius, 1200.0f);
+        }
     }
 }
