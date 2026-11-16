@@ -9,7 +9,7 @@ public class BarrelCtrl : MonoBehaviour
     [SerializeField] public GameObject expEffect;
     [SerializeField] public Texture[] textures;
     public float radius = 10.0f;
-    [SerializeField] private MeshRenderer renderer;
+    [SerializeField] private new MeshRenderer renderer;
 
     [SerializeField] private Transform tr;
     [SerializeField] private Rigidbody rb;
@@ -47,13 +47,16 @@ public class BarrelCtrl : MonoBehaviour
         IndirectDamage(tr.position);
         Destroy(gameObject, 3.0f);
     }
-    
+    Collider[] colls = new Collider[10];
     void IndirectDamage(Vector3 pos)
     {
-        Collider[] colls= Physics.OverlapSphere(pos, radius, 1 << 3);
+        // Collider[] colls = Physics.OverlapSphere(pos, radius, 1 << 3);
+
+        Physics.OverlapSphereNonAlloc(pos, radius, colls, 1 << 3);
 
         foreach (var coll in colls)
         {
+            if (coll == null) continue;
             rb = coll.GetComponent<Rigidbody>();
             rb.mass = 1.0f;
             rb.constraints = RigidbodyConstraints.None;
