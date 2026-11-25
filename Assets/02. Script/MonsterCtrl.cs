@@ -24,6 +24,12 @@ public class MonsterCtrl : MonoBehaviour
     private Transform playerTr;
     private NavMeshAgent agent;
     private Animator anim;
+
+    private readonly int hashTrace = Animator.StringToHash("IsTrace");
+    private readonly int hashAttack = Animator.StringToHash("IsAttack");
+    private readonly int hashHit = Animator.StringToHash("Hit");
+
+    private GameObject bloodEffect;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +41,8 @@ public class MonsterCtrl : MonoBehaviour
         // agent.destination = playerTr.position;
 
         anim = GetComponent<Animator>();
+
+        bloodEffect = Resources.Load<GameObject>("BloodSprayEffect");
 
         StartCoroutine(CheckMonsterState());
         StartCoroutine(MonsterAction());
@@ -76,14 +84,17 @@ public class MonsterCtrl : MonoBehaviour
             {
                 case State.IDLE:
                     agent.isStopped = true;
-                    anim.SetBool("IsTrace", false);
+                    anim.SetBool(hashTrace, false);
                     break;
                 case State.TRACE:
                     agent.SetDestination(playerTr.position);
                     agent.isStopped = false;
-                    anim.SetBool("IsTrace", true);
+                    anim.SetBool(hashTrace, true);
+
+                    anim.SetBool(hashAttack, false);
                     break;
                 case State.ATTACK:
+                    anim.SetBool(hashAttack, true);
                     break;
                 case State.DIE:
                     break;
@@ -92,6 +103,24 @@ public class MonsterCtrl : MonoBehaviour
 
             yield return new WaitForSeconds(0.3f);
         }
+    }
+    void OnCollisionEnter(Collision coll)
+    {
+        if (coll.collider.CompareTag("BULLET"))
+        {
+            Destroy(coll.gameObject);
+            anim.SetTrigger(hashHit);
+
+            Vector3 pos = coll.GetContact(0).point;
+            Quaternion rot = Quaternion.LookRotation(-coll.GetContact(0).normal);
+            ShowBloodEffect(pos, rot);
+        }
+    }
+
+    void ShowBloodEffect(Vector3 pos, Quaternion rot)
+    {
+        GameObject blood = Instantiate<GameObject>(bloodEffect, pos, rot, monsterTr);
+        Destroy(blood, 1.0f);
     }
 
     void OnDrawGizmos()
