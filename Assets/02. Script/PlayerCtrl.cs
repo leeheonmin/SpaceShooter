@@ -13,6 +13,9 @@ public class PlayerCtrl : MonoBehaviour
 
     [SerializeField] public float moveSpeed = 10.0f;
     [SerializeField] public float turnSpeed = 80.0f;
+
+    private readonly float initHp = 100.0f;
+    public float currHp;
     void Awake()
     {
         
@@ -78,13 +81,22 @@ public class PlayerCtrl : MonoBehaviour
             anim.CrossFade("Idle", FADE_LENGTH);
         }
     }
+    void OnTriggerEnter(Collider coll)
+    {  
+        if (currHp >= 0.0f && coll.CompareTag("PUNCH"))
+        {
+            currHp -= 10.0f;
+            Debug.Log($"Player hp = {currHp/initHp}");
 
-    void LateUpdate()
-    {
-        
+            if (currHp <= 0.0f)
+            {
+                PlayerDie();
+            }
+        }
     }
-    void FixedUpdate()
+
+    void PlayerDie()
     {
-        
+        Debug.Log("Player Die!");
     }
 }
